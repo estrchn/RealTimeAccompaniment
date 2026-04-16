@@ -53,15 +53,14 @@ def align_score_and_performance(performance, interpretation):
 
     return interpretation, matched_count, unmatched_count, unmatched_events
 
-def plot_alignment(interpretation, output_img_path):
+def plot_alignment(interpretation):
     score_times = []
     real_times = []
     
     for note in interpretation:
-        # 只抓取 Note On 且有配對成功 (時間不為 0) 的音符來畫圖
         if note[1] == 144 and note[4] != 0:
-            score_times.append(note[3])  # X軸：樂譜上的拍數
-            real_times.append(note[4])   # Y軸：真實彈奏的秒數
+            score_times.append(note[3])  
+            real_times.append(note[4])   
             
     plt.figure(figsize=(10, 6))
     plt.plot(score_times, real_times, marker='o', linestyle='-', color='b', markersize=4)
@@ -69,13 +68,10 @@ def plot_alignment(interpretation, output_img_path):
     plt.xlabel('Score Beat (score_data)')
     plt.ylabel('Real Time in Seconds (performance_data)')
     plt.grid(True)
-    
-    plt.savefig(output_img_path)
-    plt.close()
+    plt.show()
 
 def main():
     print("=== MIDI 樂譜對齊工具 ===")
-    # 支援 Mac 終端機拖曳資料夾 (會自動去除多餘的引號與空白)
     folder_path = input("請輸入資料夾路徑 (例如 Heidenroslein/Heidenroslein_accomp): ").strip(" '\"")
     
     msg_log_file = os.path.join(folder_path, 'inputmsglog.txt')
@@ -106,16 +102,25 @@ def main():
     print("正在執行對齊運算...")
 
     # 執行演算法
-    final_interpretation, matched, unmatched = align_score_and_performance(performance_clean, interpretation_ready)
+    final_interpretation, matched, unmatched_count, unmatched_events = align_score_and_performance(performance_clean, interpretation_ready)
 
     # 輸出結果
     with open(output_file, 'w') as f:
         f.write(str(final_interpretation))
 
     print(f"\n處理完成！檔案已儲存至：{output_file}")
-    print(f"統計報告：成功配對 {matched} 個事件，無法配對 {unmatched} 個事件。")
+    print(f"統計報告：成功配對 {matched} 個事件，無法配對 {unmatched_count} 個事件。")
     if matched == 0:
         print("警告：成功配對數為 0，輸出的時間與力度將全部為 0！(請參考下方的除錯說明)")
+    
+    if unmatched_count > 0:
+        print("\n--- 無法配對的事件列表 ---")
+        for event in unmatched_events:
+            print(event)
+        print("--------------------------")
+    
+    print("\n正在開啟對齊曲線圖視窗 (關閉圖表視窗後程式才會結束)...")
+    plot_alignment(final_interpretation)
 
 if __name__ == "__main__":
     main()
