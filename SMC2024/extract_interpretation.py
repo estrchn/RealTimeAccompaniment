@@ -15,14 +15,14 @@ import calculate_jerk
 
 piece=input('which piece (4,16,g)?')
 if piece=='4':
-    inputscorefile='gt/SMC_little_star_RH/outputscore.txt'
-    outputscorefile='gt/SMC_little_star_LH4/outputscore.txt'
+    inputscorefile='SMC2024/gt/SMC_little_star_RH/outputscore.txt'
+    outputscorefile='SMC2024/gt/SMC_little_star_LH4/outputscore.txt'
 if piece=='16':
-    inputscorefile='gt/SMC_little_star_RH/outputscore.txt'
-    outputscorefile='gt/SMC_little_star_LH16/outputscore.txt'
+    inputscorefile='SMC2024/gt/SMC_little_star_RH/outputscore.txt'
+    outputscorefile='SMC2024/gt/SMC_little_star_LH16/outputscore.txt'
 if piece=='g':
-    inputscorefile='gt/SMC_gounod_16_1/outputscore_concat.txt'
-    outputscorefile='gt/SMC_gounod_melody_1/outputscore_concat.txt'
+    inputscorefile='SMC2024/gt/SMC_gounod_16_1/outputscore_concat.txt'
+    outputscorefile='SMC2024/gt/SMC_gounod_melody_1/outputscore_concat.txt'
 
 logtype=input('which type (h,a)?')
 
@@ -261,7 +261,7 @@ outputjerksum=[]
 
 for datasetID in datasetIDs:
     print('processing '+str(datasetID))
-    with open('data/'+datasetID+'/inputmsglog.txt') as f:
+    with open('SMC2024/data/'+datasetID+'/inputmsglog.txt') as f:
         performance=eval(f.read())
 
     inputperformance=[]
@@ -273,7 +273,7 @@ for datasetID in datasetIDs:
             outputperformance+=[event[1:]]
 
     if logtype=='a':
-        with open('data/'+datasetID+'/realoutputlog.txt') as f:
+        with open('SMC2024/data/'+datasetID+'/realoutputlog.txt') as f:
             outputtimings=eval(f.read())
         i=0
         for note in outputscore:
@@ -289,11 +289,11 @@ for datasetID in datasetIDs:
     inputinterpretation=write_interpretation(inputperformance,inputinterpretation)
     outputinterpretation=write_interpretation(outputperformance,outputinterpretation)
 
-    outputfile=open('data/'+datasetID+'/inputinterpretation.txt',"w")
+    outputfile=open('SMC2024/data/'+datasetID+'/inputinterpretation.txt',"w")
     outputfile.write(str(inputinterpretation))
     outputfile.close()
 
-    outputfile=open('data/'+datasetID+'/outputinterpretation.txt',"w")
+    outputfile=open('SMC2024/data/'+datasetID+'/outputinterpretation.txt',"w")
     outputfile.write(str(outputinterpretation))
     outputfile.close()
 
