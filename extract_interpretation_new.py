@@ -23,7 +23,7 @@ def align_score_and_performance(performance, interpretation):
         if msg[0] == 144: 
             for note in interpretation:
                 # 時間容差視窗
-                if note[1] == 144 and note[3] >= inputscorepositions[lastinputscorepositionIndex] - 0.01 and note[3] <= inputscorepositions[lastinputscorepositionIndex+1] + 1.01:
+                if note[1] == 144 and note[3] >= inputscorepositions[lastinputscorepositionIndex] - 0.01 and note[3] <= inputscorepositions[lastinputscorepositionIndex+1] + 0.01:
                     # 音高必須完全相同，且尚未被配對過 ([0, 0])
                     if note[2] == msg[1] and note[4:] == [0, 0]: 
                         note[4] = msg[3] # 寫入真實時間
@@ -53,7 +53,7 @@ def align_score_and_performance(performance, interpretation):
 
     return interpretation, matched_count, unmatched_count, unmatched_events
 
-def plot_alignment(interpretation):
+def plot_alignment(interpretation, output_img_path):
     score_times = []
     real_times = []
     
@@ -68,7 +68,8 @@ def plot_alignment(interpretation):
     plt.xlabel('Score Beat (score_data)')
     plt.ylabel('Real Time in Seconds (performance_data)')
     plt.grid(True)
-    plt.show()
+    plt.savefig(output_img_path)
+    plt.close()
 
 def main():
     print("=== MIDI 樂譜對齊工具 ===")
@@ -119,8 +120,10 @@ def main():
             print(event)
         print("--------------------------")
     
-    print("\n正在開啟對齊曲線圖視窗 (關閉圖表視窗後程式才會結束)...")
-    plot_alignment(final_interpretation)
+    plot_file = os.path.join(folder_path, 'alignment_plot.png')
+    print(f"\n正在將對齊曲線圖存成圖片：{plot_file} ...")
+    plot_alignment(final_interpretation, plot_file)
+    print("✨ 圖表已生成！請從左側檔案總管點開查看。")
 
 if __name__ == "__main__":
     main()
